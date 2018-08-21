@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VersionManagement</name>
+    </assembly>
+    <members>
+        <member name="M:VersionManagement.Controllers.VersionController.GetVersions(VersionManagement.Models.Department,VersionManagement.Models.VersionStatus,System.Int32,System.Int32)">
+            <summary>
+            获取版本列表
+            </summary>
+            <param name="department">0:All, 1:BPO, 2:FYU, 3:ESB, 4:HaoTian, 5:FanYou, 6:SDB</param>
+            <param name="status">0:Undefined, 1:未审核, 2:已审核</param>
+            <param name="pageNumber">页面号码</param>
+            <param name="pageSize">一页列表长度</param>
+            <returns>版本列表</returns>
+        </member>
+        <member name="M:VersionManagement.Controllers.VersionController.GetVersionById(System.Guid)">
+            <summary>
+            根据版本ID获取版本信息
+            </summary>
+            <param name="id">版本 Id</param>
+            <returns>一个版本信息</returns>
+        </member>
+        <member name="M:VersionManagement.Controllers.VersionController.UpdateVersion(VersionManagement.Models.VersionInfo)">
+            <summary>
+            新增或更新版本信息
+            </summary>
+            <param name="version">一个版本实例</param>
+            <returns>新增或更新的版本</returns>
+        </member>
+        <member name="M:VersionManagement.Controllers.VersionController.DeleteVersion(System.Guid)">
+            <summary>
+            根据版本ID删除版本
+            </summary>
+            <param name="id">版本ID</param>
+            <returns>删除的版本</returns>
+        </member>
+        <member name="M:VersionManagement.Controllers.VersionController.SubmitVersion(System.Guid)">
+            <summary>
+            提交版本. 提交后版本进入发布流程，版本信息不可再修改
+            </summary>
+            <param name="id">版本ID</param>
+            <returns>提交的版本</returns>
+        </member>
+        <member name="M:VersionManagement.Controllers.VersionController.GetVersionDetails(System.Guid,System.Int32,System.Int32,System.String)">
+            <summary>
+            获取版本详情列表
+            </summary>
+            <param name="versionId">版本 ID</param>
+            <returns>版本详情列表</returns>
+            <param name="pageIndex">查询页码</param>
+            <param name="pageSize">列表大小</param>
+            <param name="applicant">申请人名字</param>
+        </member>
+        <member name="M:VersionManagement.Controllers.VersionController.GetVersionDetailById(System.Guid,System.Guid)">
+            <summary>
+            获取一个版本详情
+            </summary>
+            <param name="versionId">版本ID</param>
+            <param name="detailId">详情ID</param>
+            <returns>版本详情</returns>
+        </member>
+        <member name="M:VersionManagement.Controllers.VersionController.UpdateVersionDetail(System.Guid,VersionManagement.Models.VersionDetail)">
+            <summary>
+            新增或更新一个版本详情信息
+            </summary>
+            <param name="versionId">版本 ID</param>
+            <param name="detail">详情内容</param>
+            <returns>新增或更新的版本详情</returns>
+        </member>
+        <member name="M:VersionManagement.Controllers.VersionController.DeleteVersionDetail(System.Guid,System.Guid)">
+            <summary>
+            根据详情ID删除某条版本详情
+            </summary>
+            <param name="versionId">版本ID</param>
+            <param name="detailId">详情ID</param>
+            <returns>被删除的版本详情</returns>
+        </member>
+        <member name="T:VersionManagement.Models.Department">
+            <summary>
+            产品部门列表
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.Department.All">
+            <summary>
+            所有BU
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.Department.BPO">
+            <summary>
+            泛耘
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.Department.FYU">
+            <summary>
+            泛员网
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.Department.ESB">
+            <summary>
+            易社保
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.Department.HaoTian">
+            <summary>
+            昊天
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.Department.FanYou">
+            <summary>
+            泛优
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.Department.SDB">
+            <summary>
+            社保100
+            </summary>
+        </member>
+        <member name="T:VersionManagement.Models.TaskType">
+            <summary>
+            任务类型
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.TaskType.UserStory">
+            <summary>
+            用户故事
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.TaskType.Bug">
+            <summary>
+            Bug
+            </summary>
+        </member>
+        <member name="T:VersionManagement.Models.VersionDetail">
+            <summary>
+            版本详情信息
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionDetail.Id">
+            <summary>
+            详情ID
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionDetail.TaskTitle">
+            <summary>
+            任务名称
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionDetail.Type">
+            <summary>
+            任务类型, 0：用户故事, 1:bug
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionDetail.Iteration">
+            <summary>
+            迭代周期
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionDetail.CommitIds">
+            <summary>
+            任务对应代码提交ID列表，以逗号分隔, 例：efcf915e,e9148f99,e740b46f
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionDetail.DetailNote">
+            <summary>
+            修改内容详情
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionDetail.Applicant">
+            <summary>
+            申请人
+            </summary>
+        </member>
+        <member name="T:VersionManagement.Models.VersionInfo">
+            <summary>
+            版本信息
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionInfo.Id">
+            <summary>
+            版本GUID
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionInfo.ReleaseDate">
+            <summary>
+            版本上线时间
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionInfo.VersionNumber">
+            <summary>
+            版本号 (例:v1.2.6)
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionInfo.VersionTitle">
+            <summary>
+            版本标题
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionInfo.Department">
+            <summary>
+            产品部门
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionInfo.Creator">
+            <summary>
+            版本创建人姓名
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionInfo.Status">
+            <summary>
+            版本状态
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionInfo.ReleaseNote">
+            <summary>
+            版本发布详细描述
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Models.VersionInfo.Detailes">
+            <summary>
+            版本详情列表
+            </summary>
+        </member>
+        <member name="T:VersionManagement.Models.VersionStatus">
+            <summary>
+            版本发布状态列表
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.VersionStatus.Undefined">
+            <summary>
+            所有状态
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.VersionStatus.unaudited">
+            <summary>
+            未审核
+            </summary>
+        </member>
+        <member name="F:VersionManagement.Models.VersionStatus.audited">
+            <summary>
+            已审核
+            </summary>
+        </member>
+        <member name="M:VersionManagement.Repositories.VersionRepository.GetPagedVersions(System.Collections.Generic.ICollection{VersionManagement.Models.Department},System.Collections.Generic.ICollection{VersionManagement.Models.VersionStatus},System.Int32,System.Int32)">
+            <summary>
+            Get version list by department and audit status.
+            The lastest unaudited items are ordered first.
+            </summary>
+            <param name="departments">Fairhr product departments.</param>
+            <param name="status">Unaudited or audited.</param>
+            <param name="pageNumber">The page number.</param>
+            <param name="pageSize">How many rows in one page.</param>
+            <returns>List of version infos.</returns>
+        </member>
+    </members>
+</doc>
