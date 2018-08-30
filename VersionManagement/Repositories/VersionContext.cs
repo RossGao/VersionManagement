@@ -10,9 +10,13 @@ namespace VersionManagement.Repositories
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            //base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<VersionDetail>()
+                .HasOne(vd => vd.Version).WithMany(vi => vi.Detailes);
         }
 
         public DbSet<VersionInfo> Versions { get; set; }
+
+        public DbSet<VersionDetail> Details { get; set; }
     }
 }

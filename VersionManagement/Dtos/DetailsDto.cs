@@ -7,6 +7,6 @@ namespace VersionManagement.Dtos
     {
         public long TotalCount { get; set; }
 
-        public ICollection<VersionDetail> Details { get; set; }
+        public ICollection<VersionDetailDto> Details { get; set; }
     }
 }

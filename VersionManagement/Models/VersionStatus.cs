@@ -11,13 +11,13 @@
         Undefined,
 
         /// <summary>
+        /// 已审核
+        /// </summary>
+        audited,
+
+        /// <summary>
         /// 未审核
         /// </summary>
         unaudited,
-
-        /// <summary>
-        /// 已审核
-        /// </summary>
-        audited
     }
 }

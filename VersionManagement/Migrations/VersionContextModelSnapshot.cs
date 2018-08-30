@@ -38,13 +38,13 @@ namespace VersionManagement.Migrations
 
                     b.Property<int>("Type");
 
-                    b.Property<Guid?>("VersionInfoId");
+                    b.Property<Guid>("VersionId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VersionInfoId");
+                    b.HasIndex("VersionId");
 
-                    b.ToTable("VersionDetail");
+                    b.ToTable("Details");
                 });
 
             modelBuilder.Entity("VersionManagement.Models.VersionInfo", b =>
@@ -76,9 +76,10 @@ namespace VersionManagement.Migrations
 
             modelBuilder.Entity("VersionManagement.Models.VersionDetail", b =>
                 {
-                    b.HasOne("VersionManagement.Models.VersionInfo")
+                    b.HasOne("VersionManagement.Models.VersionInfo", "Version")
                         .WithMany("Detailes")
-                        .HasForeignKey("VersionInfoId");
+                        .HasForeignKey("VersionId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

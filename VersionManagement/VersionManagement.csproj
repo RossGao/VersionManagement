@@ -11,15 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20180821063014_ChangeDetailFields.cs" />
-    <Compile Remove="Migrations\20180821063014_ChangeDetailFields.Designer.cs" />
-    <Compile Remove="Migrations\20180821063514_ChangeDetailFields.cs" />
-    <Compile Remove="Migrations\20180821063514_ChangeDetailFields.Designer.cs" />
-    <Compile Remove="Migrations\20180821064329_ChangeDetailFields.cs" />
-    <Compile Remove="Migrations\20180821064329_ChangeDetailFields.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

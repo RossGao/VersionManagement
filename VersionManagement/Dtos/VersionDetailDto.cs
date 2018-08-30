@@ -1,13 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using VersionManagement.Models;
 
-namespace VersionManagement.Models
+namespace VersionManagement.Dtos
 {
-    /// <summary>
-    /// 版本详情信息
-    /// </summary>
-    public class VersionDetail
+    public class VersionDetailDto
     {
         /// <summary>
         /// 详情ID
@@ -50,9 +47,8 @@ namespace VersionManagement.Models
         public string Applicant { get; set; }
 
         /// <summary>
-        /// 详情关联的版本信息
+        /// 版本ID
         /// </summary>
-        [Required]
-        public virtual VersionInfo Version { get; set; }
+        public Guid VersionId { get; set; }
     }
 }

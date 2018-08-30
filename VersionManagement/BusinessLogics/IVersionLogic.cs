@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VersionManagement.Dtos;
 using VersionManagement.Models;
 
 namespace VersionManagement.BusinessLogics
@@ -13,16 +14,16 @@ namespace VersionManagement.BusinessLogics
 
         Task<VersionInfo> UpdateVersionAsync(VersionInfo version);
 
-        VersionInfo DeleteVersion(Guid versionId);
+        void DeleteVersion(Guid versionId);
 
-        VersionInfo SubmitVersion(Guid versionId);
+        VersionInfo SubmitVersion(Guid versionId, string releaseNote);
 
         ICollection<VersionDetail> GetVersionDetails(Guid versionId, out long totalCount, int pageIndex, int pageSize, string applicant);
 
-        VersionDetail GetVersionDetailById(Guid versionId, Guid detailId);
+        VersionDetail GetVersionDetailById(Guid detailId);
 
-        VersionDetail UpdateVersionDetail(Guid versionId, VersionDetail detail);
+        VersionDetail UpdateVersionDetail(VersionDetailDto detail);
 
-        VersionDetail DeleteVersionDetail(Guid versionId, Guid detailId);
+        void DeleteVersionDetail(Guid detailId);
     }
 }

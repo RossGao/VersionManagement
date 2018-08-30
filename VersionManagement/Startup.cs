@@ -42,13 +42,17 @@ namespace VersionManagement
             {
                 options.AddPolicy(
                     "TestOrigin",
-                    builder => builder.WithOrigins("http://168.33.162.139:8080").AllowAnyMethod());
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .AllowAnyMethod());
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerGen(c =>
             {
+
                 c.SwaggerDoc("v1", new Info { Title = "Version Control Manager", Version = "v1" });
                 //var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, ".xml");

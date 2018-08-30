@@ -15,21 +15,24 @@ namespace VersionManagement.Repositories
             dbContext = theDbCotext;
         }
 
-        public VersionInfo DeleteVersion(Guid versionId)
+        public void DeleteVersion(Guid versionId)
         {
             if (versionId != Guid.Empty)
             {
-                var version = dbContext.Versions.Find(versionId);
+                //var version = dbContext.Versions.Find(versionId);
 
-                if (version != null)
-                {
-                    dbContext.Versions.Remove(version);
-                    dbContext.SaveChanges();
-                    return version;
-                }
+                //if (version != null)
+                //{
+                //    dbContext.Versions.Remove(version);
+                //    dbContext.SaveChanges();
+                //    return version;
+                //}
+
+                var version = new VersionInfo() { Id = versionId };
+                dbContext.Versions.Attach(version);
+                dbContext.Remove(version);
+                dbContext.SaveChanges();
             }
-
-            return null;
         }
 
         public VersionInfo GetVersionById(Guid id)
@@ -58,8 +61,11 @@ namespace VersionManagement.Repositories
         /// <returns>List of version infos.</returns>
         public ICollection<VersionInfo> GetPagedVersions(ICollection<Department> departments, ICollection<VersionStatus> status, int pageNumber, int pageSize)
         {
-            return dbContext.Versions.Where(v => departments.Contains(v.Department) && status.Contains(v.Status))
-                .OrderByDescending(v => v.ReleaseDate).ThenBy(v => v.Status).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            return dbContext.Versions
+                .Where(v => departments.Contains(v.Department) && status.Contains(v.Status))
+                .OrderByDescending(o => o.ReleaseDate)
+                .OrderByDescending(o => o.Status)
+                .Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         }
 
         public Task<VersionInfo> UpdateVersionAsync(VersionInfo version)
@@ -68,19 +74,23 @@ namespace VersionManagement.Repositories
            {
                if (version != null)
                {
-                   if (dbContext.Versions.Find(version.Id) == null)
+                   if (version.Id == Guid.Empty)
                    {
-                       if (version.Id == Guid.Empty)
-                       {
-                           version.Id = Guid.NewGuid();
-                       }
-
+                       version.Id = Guid.NewGuid();
                        version.Status = VersionStatus.unaudited;
                        dbContext.Versions.Add(version);
                    }
                    else
                    {
-                       dbContext.Versions.Attach(version);
+                       if (dbContext.Versions.Any(v => v.Id == version.Id))
+                       {
+                           dbContext.Entry(version).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+                           dbContext.Entry(version).Property(v => v.Status).IsModified = false; // version status cannot be update in this api.
+                       }
+                       else
+                       {
+                           return null;
+                       }
                    }
 
                    dbContext.SaveChanges();
@@ -92,85 +102,76 @@ namespace VersionManagement.Repositories
 
         public ICollection<VersionDetail> GetVersionDetails(Guid versionId, int pageIndex = 1, int pageSize = 20, string applicant = "")
         {
-            var details = dbContext.Versions.Find(versionId).Detailes;
-
-            if (!string.IsNullOrWhiteSpace(applicant))
+            if (versionId == Guid.Empty)
             {
-                details = details.Where(d => string.Equals(d.Applicant, applicant, StringComparison.OrdinalIgnoreCase)).ToList();
+                return dbContext.Details.OrderBy(d => d.Applicant).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             }
 
-            return details.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return dbContext.Details.Where(d => d.Version.Id == versionId).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
         }
 
-        public VersionDetail GetVersionDetailById(Guid versionId, Guid detailId)
+        public VersionDetail GetVersionDetailById(Guid detailId)
         {
-            if (versionId != Guid.Empty && detailId != Guid.Empty)
+            if (detailId != Guid.Empty)
             {
-                return dbContext.Versions.Find(versionId).Detailes.FirstOrDefault(v => v.Id == detailId);
+                //return dbContext.Versions.Find(versionId).Detailes.FirstOrDefault(v => v.Id == detailId);
+                return dbContext.Details.Find(detailId);
             }
 
             return null;
         }
 
-        public VersionDetail UpdateVersionDetail(Guid versionId, VersionDetail detail)
+        public VersionDetail UpdateVersionDetail(VersionDetail detail)
         {
-            if (versionId != Guid.Empty && detail != null)
+            if (detail != null)
             {
-                var version = dbContext.Versions.Find(versionId);
-                List<VersionDetail> detailList;
+                dbContext.Versions.Attach(detail.Version);
 
-                if (version != null)
+                if (detail.Id == Guid.Empty)
                 {
-                    detailList = version.Detailes.ToList();
-
-                    if (detail.Id == Guid.Empty)
+                    detail.Id = Guid.NewGuid();
+                    dbContext.Details.Add(detail);
+                }
+                else
+                {
+                    if (dbContext.Details.Any(d => d.Id == detail.Id))
                     {
-                        detail.Id = Guid.NewGuid();
-                        detailList.Add(detail);
+                        dbContext.Entry(detail).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                     }
                     else
                     {
-                        var index = detailList.IndexOf(detail);
-
-                        if (index != -1)
-                        {
-                            detailList[index] = detail;
-                        }
-                        else
-                        {
-                            detailList.Add(detail);
-                        }
+                        return null;
                     }
-
-                    version.Detailes = detailList;
-                    dbContext.SaveChanges();
-                    return detail;
                 }
-            }
 
+                dbContext.SaveChanges();
+                return detail;
+            }
             return null;
+        }
+
+        public void DeleteVersionDetail(Guid detailId)
+        {
+            if (detailId != Guid.Empty)
+            {
+                var detail = new VersionDetail() { Id = detailId };
+                dbContext.Details.Attach(detail);
+                dbContext.Details.Remove(detail);
+                dbContext.SaveChanges();
+            }
         }
 
         public long GetDetailsCount(Guid versionId)
         {
-            return dbContext.Versions.Find(versionId).Detailes.Count;
-        }
-
-        public VersionDetail DeleteVersionDetail(Guid versionId, Guid detailId)
-        {
-            if (versionId != Guid.Empty && detailId != Guid.Empty)
+            if (versionId == Guid.Empty)
             {
-                var details = dbContext.Versions.Find(versionId).Detailes;
-                var detail = details.FirstOrDefault(d => d.Id == detailId);
-                details.Remove(detail);
-                dbContext.SaveChanges();
-                return detail;
+                return dbContext.Details.Count();
             }
 
-            return null;
+            return dbContext.Details.Where(d => d.Version.Id == versionId).Count();
         }
 
-        public VersionInfo SubmitVersion(Guid versionId)
+        public VersionInfo SubmitVersion(Guid versionId, string releaseNote)
         {
             if (versionId != Guid.Empty)
             {
@@ -179,6 +180,7 @@ namespace VersionManagement.Repositories
                 if (version != null)
                 {
                     version.Status = VersionStatus.audited;
+                    version.ReleaseNote = releaseNote;
                     dbContext.SaveChanges();
                     return version;
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using VersionManagement.Dtos;
 using VersionManagement.Models;
 using VersionManagement.Repositories;
 
@@ -15,14 +16,12 @@ namespace VersionManagement.BusinessLogics
             repo = theRepo;
         }
 
-        public VersionInfo DeleteVersion(Guid versionId)
+        public void DeleteVersion(Guid versionId)
         {
             if (versionId != Guid.Empty)
             {
-                return repo.DeleteVersion(versionId);
+                repo.DeleteVersion(versionId);
             }
-
-            return null;
         }
 
         public VersionInfo GetversionById(Guid id)
@@ -77,50 +76,53 @@ namespace VersionManagement.BusinessLogics
         {
             totalCount = 0;
 
+            totalCount = repo.GetDetailsCount(versionId);
+            return repo.GetVersionDetails(versionId, pageIndex, pageSize, applicant);
+        }
+
+        public VersionDetail UpdateVersionDetail(VersionDetailDto detail)
+        {
+            if (detail != null)
+            {
+                return repo.UpdateVersionDetail(new VersionDetail()
+                {
+                    Id = detail.Id,
+                    Applicant = detail.Applicant,
+                    CommitIds = detail.CommitIds,
+                    DetailNote = detail.DetailNote,
+                    Iteration = detail.Iteration,
+                    TaskTitle = detail.TaskTitle,
+                    Type = detail.Type,
+                    Version = new VersionInfo() { Id = detail.VersionId }
+                });
+            }
+
+            return null;
+        }
+
+        public VersionDetail GetVersionDetailById(Guid detailId)
+        {
+            if (detailId != Guid.Empty)
+            {
+                return repo.GetVersionDetailById(detailId);
+            }
+
+            return null;
+        }
+
+        public void DeleteVersionDetail(Guid detailId)
+        {
+            if (detailId != Guid.Empty)
+            {
+                repo.DeleteVersionDetail(detailId);
+            }
+        }
+
+        public VersionInfo SubmitVersion(Guid versionId, string releaseNote)
+        {
             if (versionId != Guid.Empty)
             {
-                totalCount = repo.GetDetailsCount(versionId);
-                return repo.GetVersionDetails(versionId, pageIndex, pageSize, applicant);
-            }
-
-            return null;
-        }
-
-        public VersionDetail UpdateVersionDetail(Guid versionId, VersionDetail detail)
-        {
-            if (versionId != Guid.Empty && detail != null)
-            {
-                return repo.UpdateVersionDetail(versionId, detail);
-            }
-
-            return null;
-        }
-
-        public VersionDetail GetVersionDetailById(Guid versionId, Guid detailId)
-        {
-            if (versionId != Guid.Empty && detailId != Guid.Empty)
-            {
-                return repo.GetVersionDetailById(versionId, detailId);
-            }
-
-            return null;
-        }
-
-        public VersionDetail DeleteVersionDetail(Guid versionId, Guid detailId)
-        {
-            if (versionId != Guid.Empty && detailId != Guid.Empty)
-            {
-                return repo.DeleteVersionDetail(versionId, detailId);
-            }
-
-            return null;
-        }
-
-        public VersionInfo SubmitVersion(Guid versionId)
-        {
-            if (versionId != Guid.Empty)
-            {
-                return repo.SubmitVersion(versionId);
+                return repo.SubmitVersion(versionId, releaseNote);
             }
 
             return null;

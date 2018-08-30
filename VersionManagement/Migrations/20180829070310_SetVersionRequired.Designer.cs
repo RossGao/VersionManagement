@@ -9,8 +9,8 @@ using VersionManagement.Repositories;
 namespace VersionManagement.Migrations
 {
     [DbContext(typeof(VersionContext))]
-    [Migration("20180820105314_RenameToCreator")]
-    partial class RenameToCreator
+    [Migration("20180829070310_SetVersionRequired")]
+    partial class SetVersionRequired
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,6 +18,36 @@ namespace VersionManagement.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("VersionManagement.Models.VersionDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Applicant")
+                        .IsRequired();
+
+                    b.Property<string>("CommitIds")
+                        .IsRequired();
+
+                    b.Property<string>("DetailNote");
+
+                    b.Property<string>("Iteration")
+                        .IsRequired();
+
+                    b.Property<string>("TaskTitle")
+                        .IsRequired();
+
+                    b.Property<int>("Type");
+
+                    b.Property<Guid>("VersionId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VersionId");
+
+                    b.ToTable("Details");
+                });
 
             modelBuilder.Entity("VersionManagement.Models.VersionInfo", b =>
                 {
@@ -44,6 +74,14 @@ namespace VersionManagement.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Versions");
+                });
+
+            modelBuilder.Entity("VersionManagement.Models.VersionDetail", b =>
+                {
+                    b.HasOne("VersionManagement.Models.VersionInfo", "Version")
+                        .WithMany("Detailes")
+                        .HasForeignKey("VersionId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

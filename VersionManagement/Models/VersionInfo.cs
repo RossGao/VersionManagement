@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -57,6 +58,7 @@ namespace VersionManagement.Models
         /// <summary>
         /// 版本详情列表
         /// </summary>
+        [JsonIgnore]
         public virtual ICollection<VersionDetail> Detailes { get; set; }
     }
 }
