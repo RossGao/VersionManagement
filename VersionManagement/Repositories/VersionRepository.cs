@@ -102,12 +102,19 @@ namespace VersionManagement.Repositories
 
         public ICollection<VersionDetail> GetVersionDetails(Guid versionId, int pageIndex = 1, int pageSize = 20, string applicant = "")
         {
-            if (versionId == Guid.Empty)
+            IQueryable<VersionDetail> q = dbContext.Details;
+
+            if (versionId != Guid.Empty)
             {
-                return dbContext.Details.OrderBy(d => d.Applicant).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                q = q.Where(d => d.Version.Id == versionId);
             }
 
-            return dbContext.Details.Where(d => d.Version.Id == versionId).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            if (!string.IsNullOrWhiteSpace(applicant))
+            {
+                q = q.Where(d => string.Equals(d.Applicant, applicant, StringComparison.OrdinalIgnoreCase));
+            }
+
+            return q.OrderBy(d => d.Applicant).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
         }
 
         public VersionDetail GetVersionDetailById(Guid detailId)
