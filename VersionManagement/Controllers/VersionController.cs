@@ -21,8 +21,8 @@ namespace VersionManagement.Controllers
         /// <summary>
         /// 获取版本列表
         /// </summary>
-        /// <param name="department">0:All, 1:BPO, 2:FYU, 3:ESB, 4:HaoTian, 5:FanYou, 6:SDB</param>
-        /// <param name="status">0:Undefined, 1:已审核, 2:未审核</param>
+        /// <param name="department">产品部门. 0:所有;1:泛耘;2:泛员网;3:易社保;4:昊天;5:泛优</param>
+        /// <param name="status">0:所有, 1:已审核, 2:未审核</param>
         /// <param name="pageNumber">页面号码</param>
         /// <param name="pageSize">一页列表长度</param>
         /// <returns>版本列表</returns>
@@ -63,7 +63,7 @@ namespace VersionManagement.Controllers
         }
 
         /// <summary>
-        /// 新增或更新版本信息
+        /// 新增或更新版本信息, 新增时不用填写Id的值。
         /// </summary>
         /// <param name="version">一个版本实例</param>
         /// <returns>新增或更新的版本</returns>
@@ -173,7 +173,7 @@ namespace VersionManagement.Controllers
         }
 
         /// <summary>
-        /// 新增或更新一个版本详情信息
+        /// 新增或更新一个版本详情信息, 新增时不用填写Id的值。
         /// </summary>
         /// <param name="detail">详情内容</param>
         /// <returns>新增或更新的版本详情</returns>
@@ -181,7 +181,7 @@ namespace VersionManagement.Controllers
         [HttpPost]
         public IActionResult UpdateVersionDetail([FromBody] VersionDetailDto detail)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || detail.Type == TaskType.All)
             {
                 return BadRequest();
             }

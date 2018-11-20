@@ -18,7 +18,7 @@ namespace VersionManagement.Dtos
         public string TaskTitle { get; set; }
 
         /// <summary>
-        /// 任务类型, 0：用户故事, 1:bug
+        /// 任务类型, 0：所有;1：用户故事; 2 : bug
         /// </summary>
         [Required]
         public TaskType Type { get; set; }
@@ -49,6 +49,7 @@ namespace VersionManagement.Dtos
         /// <summary>
         /// 版本ID
         /// </summary>
+        [Required]
         public Guid VersionId { get; set; }
     }
 }
