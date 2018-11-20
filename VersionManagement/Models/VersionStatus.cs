@@ -1,7 +1,7 @@
 ﻿namespace VersionManagement.Models
 {
     /// <summary>
-    /// 版本发布状态列表
+    /// 版本发布状态列表. 0:所有状态;1:已审核;2:未审核
     /// </summary>
     public enum VersionStatus
     {

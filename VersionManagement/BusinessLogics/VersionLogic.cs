@@ -44,7 +44,7 @@ namespace VersionManagement.BusinessLogics
             }
             else
             {
-                departments = new List<Department>() { Department.BPO, Department.ESB, Department.FanYou, Department.FYU, Department.HaoTian, Department.SDB };
+                departments = new List<Department>() { Department.BPO, Department.ESB, Department.FanYou, Department.FYU, Department.HaoTian };
             }
 
             ICollection<VersionStatus> statusList = new List<VersionStatus>();

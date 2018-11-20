@@ -87,7 +87,7 @@ namespace VersionManagement
                         await context.Response.WriteAsync((new ErrorDto()
                         {
                             Code = 500,
-                            Message = "Internal server error."
+                            Message = $"Internal server error.{ex.GetBaseException().Message}"
                         }).ToString(), Encoding.UTF8);
                     }
                 });

@@ -1,7 +1,7 @@
 ﻿namespace VersionManagement.Models
 {
     /// <summary>
-    /// 产品部门列表
+    /// 产品部门列表. 0:所有;1:泛耘;2:泛员网;3:易社保;4:昊天;5:泛优
     /// </summary>
     public enum Department
     {
