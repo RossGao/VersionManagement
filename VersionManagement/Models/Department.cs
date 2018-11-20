@@ -33,11 +33,6 @@
         /// <summary>
         /// 泛优
         /// </summary>
-        FanYou,
-
-        /// <summary>
-        /// 社保100
-        /// </summary>
-        SDB
+        FanYou
     }
 }

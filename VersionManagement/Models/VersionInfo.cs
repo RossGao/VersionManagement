@@ -34,7 +34,7 @@ namespace VersionManagement.Models
         public string VersionTitle { get; set; }
 
         /// <summary>
-        /// 产品部门
+        /// 产品部门. 0:所有;1:泛耘;2:泛员网;3:易社保;4:昊天;5:泛优
         /// </summary>
         [Required]
         public Department Department { get; set; }
@@ -46,7 +46,7 @@ namespace VersionManagement.Models
         public string Creator { get; set; }
 
         /// <summary>
-        /// 版本状态
+        /// 版本状态. 0:所有状态;1:已审核;2:未审核
         /// </summary>
         public VersionStatus Status { get; set; }
 
