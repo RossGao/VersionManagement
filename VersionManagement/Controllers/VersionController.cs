@@ -9,6 +9,8 @@ namespace VersionManagement.Controllers
 {
     // TODO: 增加上传图片功能
     [Route("version")]
+    [ApiController]
+    [ApiVersion("1.0", Deprecated = true)]
     public class VersionController : Controller
     {
         private IVersionLogic logicHandler;
@@ -67,8 +69,9 @@ namespace VersionManagement.Controllers
         /// </summary>
         /// <param name="version">一个版本实例</param>
         /// <returns>新增或更新的版本</returns>
+        [ProducesResponseType(200, Type = typeof(VersionInfoDto))]
         [HttpPost]
-        public async Task<IActionResult> UpdateVersion([FromBody] VersionInfo version)
+        public async Task<IActionResult> UpdateVersion(VersionInfo version)
         {
             if (!ModelState.IsValid || version.Department == Department.All)
             {
@@ -135,7 +138,7 @@ namespace VersionManagement.Controllers
         /// <param name="pageSize">列表大小</param>
         /// <param name="applicant">申请人名字</param>
         [Route("details")]
-        [HttpGet]
+        //[HttpGet, MapToApiVersion("1.1")]
         public IActionResult GetVersionDetails(Guid versionId, int pageIndex = 1, int pageSize = 20, string applicant = "")
         {
             if (pageIndex > 0 && pageSize > 0)
@@ -177,11 +180,12 @@ namespace VersionManagement.Controllers
         /// </summary>
         /// <param name="detail">详情内容</param>
         /// <returns>新增或更新的版本详情</returns>
+        [ProducesResponseType(200, Type = typeof(VersionDetailDto))]
         [Route("detail")]
         [HttpPost]
-        public IActionResult UpdateVersionDetail([FromBody] VersionDetailDto detail)
+        public IActionResult UpdateVersionDetail([FromBody]VersionDetailDto detail)
         {
-            if (!ModelState.IsValid || detail.Type == TaskType.All)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
@@ -193,7 +197,8 @@ namespace VersionManagement.Controllers
                 return NotFound();
             }
 
-            return Ok(DtoTransfer.ConvertToDetailDto(detailItem));
+            // For load balance the host is not static, we should use CreatedAtRoute instead.
+            return Created(new Uri(HttpContext.Request.Host.ToString() + $"/detail/{detailItem.Id}"), DtoTransfer.ConvertToDetailDto(detailItem));
         }
 
         /// <summary>
@@ -209,6 +214,49 @@ namespace VersionManagement.Controllers
             {
                 logicHandler.DeleteVersionDetail(detailId);
                 return Ok();
+            }
+
+            return BadRequest();
+        }
+    }
+
+    [Route("version")]
+    [ApiController]
+    [ApiVersion("1.1")]
+    public class VersionV11Controller : Controller
+    {
+        private IVersionLogic logicHandler;
+
+        public VersionV11Controller(IVersionLogic logic)
+        {
+            logicHandler = logic;
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetVersionById(Guid id)
+        {
+            if (id != Guid.Empty)
+            {
+                return Ok(logicHandler.GetversionById(id));
+            }
+
+            return NotFound();
+        }
+
+        [Route("detail/{detailId}")]
+        [HttpGet]
+        public IActionResult GetVersionDetailById(Guid detailId)
+        {
+            if (detailId != Guid.Empty)
+            {
+                var detail = logicHandler.GetVersionDetailById(detailId);
+
+                if (detail != null)
+                {
+                    return Ok(detail);
+                }
+
+                return NotFound();
             }
 
             return BadRequest();

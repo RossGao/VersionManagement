@@ -21,7 +21,7 @@ namespace VersionManagement.Dtos
         /// 任务类型, 0：所有;1：用户故事; 2 : bug
         /// </summary>
         [Required]
-        public TaskType Type { get; set; }
+        public TaskType? Type { get; set; }
 
         /// <summary>
         /// 迭代周期
@@ -50,6 +50,6 @@ namespace VersionManagement.Dtos
         /// 版本ID
         /// </summary>
         [Required]
-        public Guid VersionId { get; set; }
+        public Guid? VersionId { get; set; }
     }
 }

@@ -92,8 +92,8 @@ namespace VersionManagement.BusinessLogics
                     DetailNote = detail.DetailNote,
                     Iteration = detail.Iteration,
                     TaskTitle = detail.TaskTitle,
-                    Type = detail.Type,
-                    Version = new VersionInfo() { Id = detail.VersionId }
+                    Type = detail.Type ?? TaskType.All,
+                    Version = new VersionInfo() { Id = detail.VersionId ?? Guid.Empty }
                 });
             }
 
