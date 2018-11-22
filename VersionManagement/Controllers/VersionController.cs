@@ -199,7 +199,7 @@ namespace VersionManagement.Controllers
             }
 
             // For load balance the host is not static, we should use CreatedAtRoute instead.
-            return Created(new Uri(HttpContext.Request.Host.ToString() + $"/detail/{detailItem.Id}"), DtoTransfer.ConvertToDetailDto(detailItem));
+            return Created(new Uri($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/detail/{detailItem.Id}"), DtoTransfer.ConvertToDetailDto(detailItem));
         }
 
         /// <summary>
