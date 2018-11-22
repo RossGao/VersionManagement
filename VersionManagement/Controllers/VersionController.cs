@@ -138,6 +138,7 @@ namespace VersionManagement.Controllers
         /// <param name="pageSize">列表大小</param>
         /// <param name="applicant">申请人名字</param>
         [Route("details")]
+        [HttpGet]
         //[HttpGet, MapToApiVersion("1.1")]
         public IActionResult GetVersionDetails(Guid versionId, int pageIndex = 1, int pageSize = 20, string applicant = "")
         {
