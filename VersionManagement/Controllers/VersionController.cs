@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using VersionManagement.BusinessLogics;
 using VersionManagement.Dtos;
 using VersionManagement.Models;
+using VersionManagement.Utils;
 
 namespace VersionManagement.Controllers
 {
@@ -11,6 +12,7 @@ namespace VersionManagement.Controllers
     [Route("version")]
     [ApiController]
     [ApiVersion("1.0", Deprecated = true)]
+    [ETagFilter(200)]
     public class VersionController : Controller
     {
         private IVersionLogic logicHandler;

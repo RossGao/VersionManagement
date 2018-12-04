@@ -330,5 +330,10 @@
             <param name="pageSize">How many rows in one page.</param>
             <returns>List of version infos.</returns>
         </member>
+        <member name="T:VersionManagement.Utils.ETagFilterAttribute">
+            <summary>
+            Use ETage for response caching.
+            </summary>
+        </member>
     </members>
 </doc>

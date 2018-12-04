@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using NLog;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
@@ -120,6 +121,7 @@ namespace VersionManagement
                     MaxAge = TimeSpan.FromSeconds(30)
                 };
                 context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Encoding" };
+
                 await next();
             });
 
