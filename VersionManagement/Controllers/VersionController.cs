@@ -262,5 +262,34 @@ namespace VersionManagement.Controllers
 
             return BadRequest();
         }
+
+        [Route("list")]
+        [ProducesResponseType(200, Type = typeof(VersionInfoPageDto))]
+        [HttpGet]
+        public IActionResult GetVersions(Department department, VersionStatus status, int pageNumber = 1, int pageSize = 20)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            long totalNumber = 0;
+            var versions = logicHandler.GetPagedVersionList(department, status, out totalNumber, pageNumber, pageSize);
+
+            if (versions != null && versions.Count > 0)
+            {
+                return Ok(new VersionInfoPageDto()
+                {
+                    Items = versions,
+                    limit = pageSize,
+                    pageIndex = pageNumber,
+                    TotalItems = (int)totalNumber,
+                    TotalPages = (int)(totalNumber + pageSize - 1) / pageSize
+                });
+
+            }
+
+            return NotFound();
+        }
     }
 }

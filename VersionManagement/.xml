@@ -74,6 +74,41 @@
             <param name="detailId">详情ID</param>
             <returns>被删除的版本详情</returns>
         </member>
+        <member name="T:VersionManagement.Dtos.PageDto">
+            <summary>
+            分页结果
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.PageDto.Items">
+            <summary>
+            获取或设置当前页码的记录
+            </summary>
+        </member>
+        <member name="T:VersionManagement.Dtos.Links">
+            <summary>
+            页面链接
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.Links.Previous">
+            <summary>
+            前一页
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.Links.Next">
+            <summary>
+            下一页
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.Links.Self">
+            <summary>
+            当前页
+            </summary>
+        </member>
+        <member name="T:VersionManagement.Dtos.VersionInfoPageDto">
+            <summary>
+            版本详情分页信息
+            </summary>
+        </member>
         <member name="P:VersionManagement.Dtos.VersionDetailDto.Id">
             <summary>
             详情ID

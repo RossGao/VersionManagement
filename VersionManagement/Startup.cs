@@ -11,6 +11,7 @@ using NLog;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using VersionManagement.BusinessLogics;
 using VersionManagement.Dtos;
@@ -57,6 +58,12 @@ namespace VersionManagement
                     .AllowAnyMethod());
             });
 
+            services.AddResponseCaching(options =>
+            {
+                options.UseCaseSensitivePaths = true;
+                options.MaximumBodySize = 1024;
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerGen(c =>
@@ -66,6 +73,7 @@ namespace VersionManagement
                 //var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, ".xml");
                 c.IncludeXmlComments(xmlPath);
+                c.ResolveConflictingActions(apiDesc => apiDesc.Last());
             });
         }
 
@@ -102,8 +110,20 @@ namespace VersionManagement
                 });
             });
 
-            app.UseSwagger();
+            app.UseResponseCaching();
+            app.Use(async (context, next) =>
+            {
+                context.Response.GetTypedHeaders().CacheControl =
+                new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                {
+                    Public = true,
+                    MaxAge = TimeSpan.FromSeconds(30)
+                };
+                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Encoding" };
+                await next();
+            });
 
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Version Management server API");
