@@ -11,10 +11,13 @@ using NLog;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using VersionManagement.BusinessLogics;
 using VersionManagement.Dtos;
 using VersionManagement.Repositories;
+using VersionManagement.Utils;
 
 namespace VersionManagement
 {
@@ -32,6 +35,18 @@ namespace VersionManagement
         {
             services.AddScoped<IVersionRepository, VersionRepository>();
             services.AddScoped<IVersionLogic, VersionLogic>();
+
+            var policyUri = Configuration.GetSection("Uri:HaoTian-Policy").Value;
+            services.AddHttpClient("policyService", c =>  // Named client.
+            {
+                c.BaseAddress = new Uri(policyUri);
+                c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // 一个HttpClient对应一个HttpMessageHanlder实例，这里设置handler池子中每个实例的生命周期
+                .AddPolicyHandler(request => HttpClientHelper.GetTimeoutPolicy(request))
+                .AddPolicyHandler(HttpClientHelper.GetRetryPolicy())
+                .AddPolicyHandler(HttpClientHelper.GetCircuitBreakPolicy());
+
             services.AddDbContextPool<VersionContext>(options =>
             {
                 options.UseLazyLoadingProxies();
@@ -57,6 +72,12 @@ namespace VersionManagement
                     .AllowAnyMethod());
             });
 
+            services.AddResponseCaching(options =>
+            {
+                options.UseCaseSensitivePaths = true;
+                options.MaximumBodySize = 1024;
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSwaggerGen(c =>
@@ -66,6 +87,7 @@ namespace VersionManagement
                 //var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, ".xml");
                 c.IncludeXmlComments(xmlPath);
+                c.ResolveConflictingActions(apiDesc => apiDesc.Last());
             });
         }
 
@@ -102,8 +124,21 @@ namespace VersionManagement
                 });
             });
 
-            app.UseSwagger();
+            app.UseResponseCaching();
+            app.Use(async (context, next) =>
+            {
+                context.Response.GetTypedHeaders().CacheControl =
+                new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                {
+                    Public = true,
+                    MaxAge = TimeSpan.FromSeconds(30)
+                };
+                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Encoding" };
 
+                await next();
+            });
+
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Version Management server API");

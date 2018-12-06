@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using VersionManagement.BusinessLogics;
 using VersionManagement.Dtos;
 using VersionManagement.Models;
+using VersionManagement.Utils;
 
 namespace VersionManagement.Controllers
 {
@@ -11,13 +13,16 @@ namespace VersionManagement.Controllers
     [Route("version")]
     [ApiController]
     [ApiVersion("1.0", Deprecated = true)]
+    [ETagFilter(200)]
     public class VersionController : Controller
     {
+        private readonly IHttpClientFactory clientFactory;
         private IVersionLogic logicHandler;
 
-        public VersionController(IVersionLogic logic)
+        public VersionController(IVersionLogic logic, IHttpClientFactory theFactory)
         {
             logicHandler = logic;
+            clientFactory = theFactory;
         }
 
         /// <summary>
@@ -219,9 +224,39 @@ namespace VersionManagement.Controllers
 
             return BadRequest();
         }
+
+        /// <summary>
+        /// 测试，通过HttpClientFactory库获取社保政策信息
+        /// </summary>
+        /// <param name="city">城市名称</param>
+        /// <returns>社保政策</returns>
+        [Route("socialpolicy")]
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(PolicyDto))]
+        public async Task<IActionResult> GetSocialPolicyByCity(string city)
+        {
+            if (!string.IsNullOrWhiteSpace(city))
+            {
+                var client = clientFactory.CreateClient("policyService");
+
+                if (client != null)
+                {
+                    var policy = await HttpClientHelper.GetAsync<PolicyDto>(client, $"/api/Policy/{city}");
+
+                    if (policy != null)
+                    {
+                        return Ok(policy);
+                    }
+
+                    return NotFound();
+                }
+            }
+
+            return BadRequest();
+        }
     }
 
-    [Route("version")]
+    [Route("versions")]
     [ApiController]
     [ApiVersion("1.1")]
     public class VersionV11Controller : Controller
@@ -234,6 +269,7 @@ namespace VersionManagement.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(VersionInfoDto))]
         public IActionResult GetVersionById(Guid id)
         {
             if (id != Guid.Empty)
@@ -244,13 +280,42 @@ namespace VersionManagement.Controllers
             return NotFound();
         }
 
-        [Route("detail/{detailId}")]
+        [ProducesResponseType(200, Type = typeof(VersionInfoPageDto))]
         [HttpGet]
-        public IActionResult GetVersionDetailById(Guid detailId)
+        public IActionResult GetVersions(Department department, VersionStatus status, int pageNumber = 1, int pageSize = 20)
         {
-            if (detailId != Guid.Empty)
+            if (!ModelState.IsValid)
             {
-                var detail = logicHandler.GetVersionDetailById(detailId);
+                return BadRequest();
+            }
+
+            long totalNumber = 0;
+            var versions = logicHandler.GetPagedVersionList(department, status, out totalNumber, pageNumber, pageSize);
+
+            if (versions != null && versions.Count > 0)
+            {
+                return Ok(new VersionInfoPageDto()
+                {
+                    Items = versions,
+                    limit = pageSize,
+                    pageIndex = pageNumber,
+                    TotalItems = (int)totalNumber,
+                    TotalPages = (int)(totalNumber + pageSize - 1) / pageSize
+                });
+
+            }
+
+            return NotFound();
+        }
+
+        [Route("details/{id}")]
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(VersionDetailDto))]
+        public IActionResult GetVersionDetailById(Guid id)
+        {
+            if (id != Guid.Empty)
+            {
+                var detail = logicHandler.GetVersionDetailById(id);
 
                 if (detail != null)
                 {
@@ -261,6 +326,47 @@ namespace VersionManagement.Controllers
             }
 
             return BadRequest();
+        }
+
+        [Route("details")]
+        [HttpPost]
+        [ProducesResponseType(201, Type = typeof(VersionDetailDto))]
+        public IActionResult AddVersionDetail(VersionDetailDto detail)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var detailItem = logicHandler.UpdateVersionDetail(detail);
+
+            if (detailItem == null)
+            {
+                return NotFound();
+            }
+
+            // For load balance the host is not static, we should use CreatedAtRoute instead.
+            return Created(new Uri($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}/detail/{detailItem.Id}"), DtoTransfer.ConvertToDetailDto(detailItem));
+        }
+
+        [Route("details/{id}")]
+        [HttpPut]
+        [ProducesResponseType(200, Type = typeof(VersionDetailDto))]
+        public IActionResult UpdateVersionDetail(VersionDetailDto detail)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var detailItem = logicHandler.UpdateVersionDetail(detail);
+
+            if (detailItem == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(DtoTransfer.ConvertToDetailDto(detailItem));
         }
     }
 }
