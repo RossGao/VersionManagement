@@ -241,7 +241,7 @@ namespace VersionManagement.Controllers
 
                 if (client != null)
                 {
-                    var policy = await HttpClientHelper.GetAsync<PolicyDto>(client, $"/api/Policys/{city}");
+                    var policy = await HttpClientHelper.GetAsync<PolicyDto>(client, $"/api/Policy/{city}");
 
                     if (policy != null)
                     {

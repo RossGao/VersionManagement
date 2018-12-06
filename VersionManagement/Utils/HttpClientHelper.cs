@@ -100,11 +100,11 @@ namespace VersionManagement.Utils
 
             if (req.Method == HttpMethod.Get)
             {
-                timeout = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(60));
+                timeout = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(10));
             }
             else
             {
-                timeout = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(90));
+                timeout = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(30));
             }
 
             return timeout;
