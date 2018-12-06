@@ -836,6 +836,9 @@
     <Rule Id="IDE0005" Action="None" />
     <Rule Id="IDE1005" Action="None" />
   </Rules>
+  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
+    <Rule Id="CA2007" Action="None" />
+  </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA0001" Action="Error" />
     <Rule Id="SA0002" Action="Error" />
@@ -1007,8 +1010,5 @@
     <Rule Id="SA1648" Action="Error" />
     <Rule Id="SA1649" Action="None" />
     <Rule Id="SA1651" Action="Error" />
-  </Rules>
-  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
-    <Rule Id="CA2007" Action="None" />
   </Rules>
 </RuleSet>

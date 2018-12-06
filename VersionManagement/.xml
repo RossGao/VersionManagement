@@ -74,6 +74,13 @@
             <param name="detailId">详情ID</param>
             <returns>被删除的版本详情</returns>
         </member>
+        <member name="M:VersionManagement.Controllers.VersionController.GetSocialPolicyByCity(System.String)">
+            <summary>
+            测试，通过HttpClientFactory库获取社保政策信息
+            </summary>
+            <param name="city">城市名称</param>
+            <returns>社保政策</returns>
+        </member>
         <member name="T:VersionManagement.Dtos.PageDto">
             <summary>
             分页结果
@@ -334,6 +341,52 @@
             <summary>
             Use ETage for response caching.
             </summary>
+        </member>
+        <member name="M:VersionManagement.Utils.HttpClientHelper.GetAsync``1(System.Net.Http.HttpClient,System.String)">
+            <summary>
+            发送http get请求从另一个服务地址获取信息
+            </summary>
+            <param name="client">HttpClient实例</param>
+            <param name="reqPath">请求资源相对路径</param>
+            <returns>Get请求结果</returns>
+        </member>
+        <member name="M:VersionManagement.Utils.HttpClientHelper.PostAsync``2(System.Net.Http.HttpClient,System.String,``0)">
+            <summary>
+            发送post请求到另一个服务
+            </summary>
+            <typeparam name="T">Post body对象类型</typeparam>
+            <typeparam name="R">Return 对象类型</typeparam>
+            <param name="client">HttpClient实例</param>
+            <param name="reqPath">资源相对路径</param>
+            <param name="data">post对象</param>
+            <returns>Post请求结果</returns>
+        </member>
+        <member name="M:VersionManagement.Utils.HttpClientHelper.GetRetryPolicy">
+            <summary>
+            设置服务访问重试机制，对于网络问题或服务端问题，以及返回404的情况使用重试机制，已2的幂指数倍时间间隔进行重新请求，
+            同时加上jitter时间差避免所有客户端同时进行重试造成的负担。
+            </summary>
+            <returns>针对返回结果的重试策略</returns>
+        </member>
+        <member name="M:VersionManagement.Utils.HttpClientHelper.GetTimeoutPolicy(System.Net.Http.HttpRequestMessage)">
+            <summary>
+            设置服务访问超时机制，对于get请求超过10秒为超时，其它请求超过30秒为超时
+            </summary>
+            <param name="req">Http请求</param>
+            <returns>针对返回结果的超时策略</returns>
+        </member>
+        <member name="M:VersionManagement.Utils.HttpClientHelper.GetCircuitBreakPolicy">
+            <summary>
+            设置循环中断模式客户端访问政策。当网络错误或者服务端错误出现5次时, 在30秒内无法再次请求服务，所有请求会立即返回失败，30秒后请求可以继续。
+            </summary>
+            <returns>针对返回结果的中断请求策略</returns>
+        </member>
+        <member name="M:VersionManagement.Utils.LogHelper.LogMessage(NLog.LogLevel,System.String)">
+            <summary>
+            记录日志
+            </summary>
+            <param name="level">日志级别</param>
+            <param name="message">日志内容</param>
         </member>
     </members>
 </doc>

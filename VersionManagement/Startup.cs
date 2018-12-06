@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using NLog;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using VersionManagement.BusinessLogics;
 using VersionManagement.Dtos;
 using VersionManagement.Repositories;
+using VersionManagement.Utils;
 
 namespace VersionManagement
 {
@@ -34,6 +35,18 @@ namespace VersionManagement
         {
             services.AddScoped<IVersionRepository, VersionRepository>();
             services.AddScoped<IVersionLogic, VersionLogic>();
+
+            var policyUri = Configuration.GetSection("Uri:HaoTian-Policy").Value;
+            services.AddHttpClient("policyService", c =>  // Named client.
+            {
+                c.BaseAddress = new Uri(policyUri);
+                c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // 一个HttpClient对应一个HttpMessageHanlder实例，这里设置handler池子中每个实例的生命周期
+                .AddPolicyHandler(request => HttpClientHelper.GetTimeoutPolicy(request))
+                .AddPolicyHandler(HttpClientHelper.GetRetryPolicy())
+                .AddPolicyHandler(HttpClientHelper.GetCircuitBreakPolicy());
+
             services.AddDbContextPool<VersionContext>(options =>
             {
                 options.UseLazyLoadingProxies();
