@@ -81,12 +81,12 @@
             <param name="city">城市名称</param>
             <returns>社保政策</returns>
         </member>
-        <member name="T:VersionManagement.Dtos.PageDto">
+        <member name="T:VersionManagement.Dtos.PageDto`1">
             <summary>
             分页结果
             </summary>
         </member>
-        <member name="P:VersionManagement.Dtos.PageDto.Items">
+        <member name="P:VersionManagement.Dtos.PageDto`1.Items">
             <summary>
             获取或设置当前页码的记录
             </summary>
@@ -109,11 +109,6 @@
         <member name="P:VersionManagement.Dtos.Links.Self">
             <summary>
             当前页
-            </summary>
-        </member>
-        <member name="T:VersionManagement.Dtos.VersionInfoPageDto">
-            <summary>
-            版本详情分页信息
             </summary>
         </member>
         <member name="P:VersionManagement.Dtos.VersionDetailDto.Id">
@@ -154,6 +149,46 @@
         <member name="P:VersionManagement.Dtos.VersionDetailDto.VersionId">
             <summary>
             版本ID
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.VersionDto.Id">
+            <summary>
+            版本GUID
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.VersionDto.ReleaseDate">
+            <summary>
+            版本上线时间
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.VersionDto.VersionNumber">
+            <summary>
+            版本号 (例:v1.2.6)
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.VersionDto.VersionTitle">
+            <summary>
+            版本标题
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.VersionDto.Department">
+            <summary>
+            产品部门. 0:所有;1:泛耘;2:泛员网;3:易社保;4:昊天;5:泛优
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.VersionDto.Creator">
+            <summary>
+            版本创建人姓名
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.VersionDto.Status">
+            <summary>
+            版本状态. 0:所有状态;1:已审核;2:未审核
+            </summary>
+        </member>
+        <member name="P:VersionManagement.Dtos.VersionDto.ReleaseNote">
+            <summary>
+            版本发布详细描述
             </summary>
         </member>
         <member name="T:VersionManagement.Models.Department">

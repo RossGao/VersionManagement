@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using VersionManagement.Models;
 
 namespace VersionManagement.Dtos
 {
     /// <summary>
     /// 分页结果
     /// </summary>
-    public class PageDto
+    public class PageDto<T> where T : class
     {
         // 总记录数
         public int TotalItems { get; set; }
@@ -29,7 +28,7 @@ namespace VersionManagement.Dtos
         /// <summary>
         /// 获取或设置当前页码的记录
         /// </summary>
-        public dynamic Items { get; set; }
+        public ICollection<T> Items { get; set; }
     }
 
     /// <summary>
@@ -51,13 +50,5 @@ namespace VersionManagement.Dtos
         /// 当前页
         /// </summary>
         public Uri Self { get; set; }
-    }
-
-    /// <summary>
-    /// 版本详情分页信息
-    /// </summary>
-    public class VersionInfoPageDto : PageDto
-    {
-        public new ICollection<VersionInfo> Items { get; set; }
     }
 }

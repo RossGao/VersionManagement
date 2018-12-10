@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using VersionManagement.BusinessLogics;
@@ -47,7 +49,7 @@ namespace VersionManagement.Controllers
 
             if (versions != null && versions.Count > 0)
             {
-                return Ok(DtoTransfer.ConvertToVersionDto(versions, totalNumber));
+                return Ok(DtoTransfer.ConvertToVersionsDto(versions, totalNumber));
             }
 
             return NotFound();
@@ -280,7 +282,7 @@ namespace VersionManagement.Controllers
             return NotFound();
         }
 
-        [ProducesResponseType(200, Type = typeof(VersionInfoPageDto))]
+        [ProducesResponseType(200, Type = typeof(PageDto<VersionDto>))]
         [HttpGet]
         public IActionResult GetVersions(Department department, VersionStatus status, int pageNumber = 1, int pageSize = 20)
         {
@@ -294,9 +296,12 @@ namespace VersionManagement.Controllers
 
             if (versions != null && versions.Count > 0)
             {
-                return Ok(new VersionInfoPageDto()
+                var verDtos = new List<VersionDto>();
+                versions.ToList().ForEach(v => verDtos.Add(DtoTransfer.ConvertToVersionDto(v)));
+
+                return Ok(new PageDto<VersionDto>()
                 {
-                    Items = versions,
+                    Items = verDtos,
                     limit = pageSize,
                     pageIndex = pageNumber,
                     TotalItems = (int)totalNumber,

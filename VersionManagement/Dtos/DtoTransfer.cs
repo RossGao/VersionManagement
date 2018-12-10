@@ -5,7 +5,7 @@ namespace VersionManagement.Dtos
 {
     public static class DtoTransfer
     {
-        public static VersionInfoDto ConvertToVersionDto(ICollection<VersionInfo> versions, long count)
+        public static VersionInfoDto ConvertToVersionsDto(ICollection<VersionInfo> versions, long count)
         {
             return new VersionInfoDto()
             {
@@ -14,11 +14,31 @@ namespace VersionManagement.Dtos
             };
         }
 
+        public static VersionDto ConvertToVersionDto(VersionInfo version)
+        {
+            if (version != null)
+            {
+                return new VersionDto()
+                {
+                    Id = version.Id,
+                    Creator = version.Creator,
+                    Department = version.Department.ToString(),
+                    ReleaseDate = version.ReleaseDate,
+                    ReleaseNote = version.ReleaseNote,
+                    Status = version.Status.ToString(),
+                    VersionNumber = version.VersionNumber,
+                    VersionTitle = version.VersionTitle
+                };
+            }
+
+            return null;
+        }
+
         public static DetailsDto ConvertToDetailsDto(ICollection<VersionDetail> details, long count)
         {
             var detailDtos = new List<VersionDetailDto>();
 
-            foreach(var detail in details)
+            foreach (var detail in details)
             {
                 detailDtos.Add(ConvertToDetailDto(detail));
             }
@@ -32,7 +52,7 @@ namespace VersionManagement.Dtos
 
         public static VersionDetailDto ConvertToDetailDto(VersionDetail detail)
         {
-            if(detail!=null)
+            if (detail != null)
             {
                 return new VersionDetailDto()
                 {
