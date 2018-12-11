@@ -22,10 +22,10 @@ namespace VersionManagement.Dtos
                 {
                     Id = version.Id,
                     Creator = version.Creator,
-                    Department = version.Department.ToString(),
+                    Department = version.Department,
                     ReleaseDate = version.ReleaseDate,
                     ReleaseNote = version.ReleaseNote,
-                    Status = version.Status.ToString(),
+                    Status = version.Status,
                     VersionNumber = version.VersionNumber,
                     VersionTitle = version.VersionTitle
                 };

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using VersionManagement.Models;
 
 namespace VersionManagement.Dtos
 {
@@ -32,7 +33,7 @@ namespace VersionManagement.Dtos
         /// 产品部门. 0:所有;1:泛耘;2:泛员网;3:易社保;4:昊天;5:泛优
         /// </summary>
         [Required]
-        public string Department { get; set; }
+        public Department Department { get; set; }
 
         /// <summary>
         /// 版本创建人姓名
@@ -43,7 +44,7 @@ namespace VersionManagement.Dtos
         /// <summary>
         /// 版本状态. 0:所有状态;1:已审核;2:未审核
         /// </summary>
-        public string Status { get; set; }
+        public VersionStatus Status { get; set; }
 
         /// <summary>
         /// 版本发布详细描述
