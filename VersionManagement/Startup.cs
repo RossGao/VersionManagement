@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.ResponseCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
+using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
@@ -43,7 +45,7 @@ namespace VersionManagement
                 c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             })
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5)) // 一个HttpClient对应一个HttpMessageHanlder实例，这里设置handler池子中每个实例的生命周期
-                .AddPolicyHandler(request => HttpClientHelper.GetTimeoutPolicy(request))
+                .AddPolicyHandler(request => HttpClientHelper.GetTimeoutPolicy(request)) // 添加外部服务访问策略
                 .AddPolicyHandler(HttpClientHelper.GetRetryPolicy())
                 .AddPolicyHandler(HttpClientHelper.GetCircuitBreakPolicy());
 
@@ -82,12 +84,13 @@ namespace VersionManagement
 
             services.AddSwaggerGen(c =>
             {
-
-                c.SwaggerDoc("v1", new Info { Title = "Version Control Manager", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "Version Control Manager V1", Version = "v1" });
+                c.SwaggerDoc("v1.1", new Info { Title = "Version Control Manager V1.1", Version = "v1.1" });
                 //var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, ".xml");
                 c.IncludeXmlComments(xmlPath);
-                c.ResolveConflictingActions(apiDesc => apiDesc.Last());
+                //c.ResolveConflictingActions(apiDesc => apiDesc.Last());
+                c.OperationFilter<AddHeaderOperationFilter>("api-version", "Indicate api version number", false); // Add http header for version parameter in swagger.
             });
         }
 
@@ -125,7 +128,7 @@ namespace VersionManagement
             });
 
             app.UseResponseCaching();
-            app.Use(async (context, next) =>
+            app.Use(async (context, next) =>                // 设置ResponseCaching策略
             {
                 context.Response.GetTypedHeaders().CacheControl =
                 new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
@@ -135,13 +138,21 @@ namespace VersionManagement
                 };
                 context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Encoding" };
 
+                var respCacheFeature = context.Features.Get<IResponseCachingFeature>();
+
+                if (respCacheFeature != null)
+                {
+                    respCacheFeature.VaryByQueryKeys = new[] { "*" }; // 任何请求参数不同对应的cache也不同，避免参数改变任然使用同一个cache的问题
+                }
+
                 await next();
             });
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Version Management server API");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Version Management server API v1");
+                c.SwaggerEndpoint("/swagger/v1.1/swagger.json", "Version Management server API v1.1");
             });
 
             app.UseMvc();
