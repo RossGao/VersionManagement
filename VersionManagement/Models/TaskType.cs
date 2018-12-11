@@ -1,8 +1,12 @@
-﻿namespace VersionManagement.Models
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace VersionManagement.Models
 {
     /// <summary>
-    /// 任务类型。0：所有;1：用户故事; 2 : bug
+    /// 任务类型
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum TaskType
     {
         /// <summary>

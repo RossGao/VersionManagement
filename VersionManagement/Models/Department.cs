@@ -1,8 +1,12 @@
-﻿namespace VersionManagement.Models
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace VersionManagement.Models
 {
     /// <summary>
-    /// 产品部门列表. 0:所有;1:泛耘;2:泛员网;3:易社保;4:昊天;5:泛优
+    /// 产品部门列表
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum Department
     {
         /// <summary>

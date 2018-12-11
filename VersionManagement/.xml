@@ -193,7 +193,7 @@
         </member>
         <member name="T:VersionManagement.Models.Department">
             <summary>
-            产品部门列表. 0:所有;1:泛耘;2:泛员网;3:易社保;4:昊天;5:泛优
+            产品部门列表
             </summary>
         </member>
         <member name="F:VersionManagement.Models.Department.All">
@@ -228,7 +228,7 @@
         </member>
         <member name="T:VersionManagement.Models.TaskType">
             <summary>
-            任务类型。0：所有;1：用户故事; 2 : bug
+            任务类型
             </summary>
         </member>
         <member name="F:VersionManagement.Models.TaskType.All">
@@ -343,7 +343,7 @@
         </member>
         <member name="T:VersionManagement.Models.VersionStatus">
             <summary>
-            版本发布状态列表. 0:所有状态;1:已审核;2:未审核
+            版本发布状态列表
             </summary>
         </member>
         <member name="F:VersionManagement.Models.VersionStatus.Undefined">

@@ -15,6 +15,7 @@ namespace VersionManagement.Controllers
     [Route("version")]
     [ApiController]
     [ApiVersion("1.0", Deprecated = true)]
+    [ApiExplorerSettings(GroupName = "v1")] // swagger把API分组后结合swagger ui过滤显示
     [ETagFilter(200)]
     public class VersionController : Controller
     {
@@ -261,6 +262,8 @@ namespace VersionManagement.Controllers
     [Route("versions")]
     [ApiController]
     [ApiVersion("1.1")]
+    [ApiExplorerSettings(GroupName = "v1.1")] // swagger把API分组后结合swagger ui过滤显示
+    [ETagFilter(200)]
     public class VersionV11Controller : Controller
     {
         private IVersionLogic logicHandler;
@@ -271,7 +274,7 @@ namespace VersionManagement.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(VersionInfoDto))]
+        [ProducesResponseType(typeof(VersionInfoDto), 200)]
         public IActionResult GetVersionById(Guid id)
         {
             if (id != Guid.Empty)
@@ -282,7 +285,7 @@ namespace VersionManagement.Controllers
             return NotFound();
         }
 
-        [ProducesResponseType(200, Type = typeof(PageDto<VersionDto>))]
+        [ProducesResponseType(typeof(PageDto<VersionDto>), 200)]
         [HttpGet]
         public IActionResult GetVersions(Department department, VersionStatus status, int pageNumber = 1, int pageSize = 20)
         {
@@ -315,7 +318,7 @@ namespace VersionManagement.Controllers
 
         [Route("details/{id}")]
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(VersionDetailDto))]
+        [ProducesResponseType(typeof(VersionDetailDto), 200)]
         public IActionResult GetVersionDetailById(Guid id)
         {
             if (id != Guid.Empty)
@@ -335,7 +338,7 @@ namespace VersionManagement.Controllers
 
         [Route("details")]
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(VersionDetailDto))]
+        [ProducesResponseType(typeof(VersionDetailDto), 201)]
         public IActionResult AddVersionDetail(VersionDetailDto detail)
         {
             if (!ModelState.IsValid)
@@ -356,7 +359,7 @@ namespace VersionManagement.Controllers
 
         [Route("details/{id}")]
         [HttpPut]
-        [ProducesResponseType(200, Type = typeof(VersionDetailDto))]
+        [ProducesResponseType(typeof(VersionDetailDto), 200)]
         public IActionResult UpdateVersionDetail(VersionDetailDto detail)
         {
             if (!ModelState.IsValid)
